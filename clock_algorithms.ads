@@ -25,10 +25,11 @@ package Clock_Algorithms is
       Page : Page_ID;
       Ref  : Boolean;
    end record;
-   type Clock_Array is array (Natural range <>) of Clock_Entry;
+
+   type Clock_Array (Capacity : Natural) is array (0 .. Capacity - 1) of Clock_Entry;
 
    type Clock_Algo (Max_Capacity : Natural) is new Base_Algorithm with record
-      Frames : Clock_Array (0 .. Max_Capacity - 1);
+      Frames : Clock_Array (Max_Capacity);
       Hand   : Natural := 0;
       Count  : Natural := 0;
    end record;
@@ -45,10 +46,11 @@ package Clock_Algorithms is
       Page  : Page_ID;
       Count : Natural;
    end record;
-   type GClock_Array is array (Natural range <>) of GClock_Entry;
+
+   type GClock_Array (Capacity : Natural) is array (0 .. Capacity - 1) of GClock_Entry;
 
    type GCLOCK_Algo (Max_Capacity : Natural) is new Base_Algorithm with record
-      Frames    : GClock_Array (0 .. Max_Capacity - 1);
+      Frames    : GClock_Array (Max_Capacity);
       Hand      : Natural := 0;
       Count     : Natural := 0;
       Max_Count : Natural := 2;
@@ -67,10 +69,11 @@ package Clock_Algorithms is
       Ref         : Boolean;
       Last_Access : Natural;
    end record;
-   type WSClock_Array is array (Natural range <>) of WSClock_Entry;
+
+   type WSClock_Array (Capacity : Natural) is array (0 .. Capacity - 1) of WSClock_Entry;
 
    type WSClock_Algo (Max_Capacity : Natural) is new Base_Algorithm with record
-      Frames : WSClock_Array (0 .. Max_Capacity - 1);
+      Frames : WSClock_Array (Max_Capacity);
       Hand   : Natural := 0;
       Count  : Natural := 0;
       Tau    : Natural := 10;

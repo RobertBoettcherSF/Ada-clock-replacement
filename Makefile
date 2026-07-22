@@ -14,12 +14,6 @@ BIN_DIR := bin
 # Source files
 SRC_FILES := clock_algorithms.ads clock_algorithms.adb
 
-# Test files (optional)
-TEST_FILES := test_clock.adb
-
-# Main executable (if you create one)
-MAIN_FILE := main.adb
-
 # Compiler flags
 GNAT_FLAGS := -g -O2 -gnat12 -gnata -gnatwa
 
@@ -27,15 +21,15 @@ GNAT_FLAGS := -g -O2 -gnat12 -gnata -gnatwa
 all: library
 
 # Build the library
-library: $(GPR_FILE) $(SRC_FILES)
+library: $(SRC_FILES)
 	@mkdir -p $(OBJ_DIR)
 	$(GNAT) -P $(GPR_FILE) $(GNAT_FLAGS)
 
 # Build and run a test program
-test: $(MAIN_FILE)
+test: test_clock.adb
 	@mkdir -p $(BIN_DIR)
-	$(GNAT) -P $(GPR_FILE) $(MAIN_FILE) $(GNAT_FLAGS)
-	./$(MAIN_FILE:.adb=)
+	$(GNAT) -P $(GPR_FILE) test_clock.adb $(GNAT_FLAGS)
+	./test_clock
 
 # Clean build artifacts
 clean:
@@ -43,7 +37,7 @@ clean:
 
 # Clean everything
 clobber: clean
-	rm -f main test_clock
+	rm -f test_clock main
 
 # Show available targets
 help:
@@ -54,6 +48,6 @@ help:
 	@echo "  clean    - Remove build artifacts"
 	@echo "  clobber  - Remove all build files"
 	@echo ""
-	@echo "To create a test program, create main.adb or test_clock.adb"
+	@echo "Note: 'make test' requires test_clock.adb to exist"
 
 .PHONY: all library test clean clobber help
