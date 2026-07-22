@@ -27,7 +27,7 @@ library: $(SRC_FILES)
 
 # Build and run a test program
 test: test_clock.adb
-	@mkdir -p $(BIN_DIR)
+	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
 	$(GNAT) -P $(GPR_FILE) test_clock.adb $(GNAT_FLAGS)
 	./test_clock
 
