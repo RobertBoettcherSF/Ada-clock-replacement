@@ -2,19 +2,10 @@
 -- This package provides test cases and assertions for verifying
 -- the correctness of various page replacement algorithms.
 
-with Clock_Algorithms;
-
 package Clock_Tests is
 
    -- Test result type
    type Test_Result is (Pass, Fail, Error);
-   
-   -- Test case record - using unbounded strings to avoid length issues
-   type Test_Case is record
-      Name : String(1..80) := (others => ' ');
-      Description : String(1..200) := (others => ' ');
-      Result : Test_Result := Pass;
-   end record;
    
    -- Global test results
    Total_Tests  : Natural := 0;

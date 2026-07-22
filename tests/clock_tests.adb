@@ -3,14 +3,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body Clock_Tests is
 
-   -- Current test being executed
-   Current_Test : Test_Case;
-
    procedure Assert (Condition : Boolean; Message : String) is
    begin
       Total_Tests := Total_Tests + 1;
       if not Condition then
-         Current_Test.Result := Fail;
          Failed_Tests := Failed_Tests + 1;
          Put_Line("  [FAIL] " & Message);
       else
@@ -25,7 +21,6 @@ package body Clock_Tests is
          Put_Line("  [PASS] " & Message & " (Expected: " & Natural'Image(Expected) & 
                   ", Actual: " & Natural'Image(Actual) & ")");
       else
-         Current_Test.Result := Fail;
          Failed_Tests := Failed_Tests + 1;
          Put_Line("  [FAIL] " & Message & " (Expected: " & Natural'Image(Expected) & 
                   ", Actual: " & Natural'Image(Actual) & ")");
@@ -39,7 +34,6 @@ package body Clock_Tests is
          Put_Line("  [PASS] " & Message & " (Expected: " & Float'Image(Expected) & 
                   ", Actual: " & Float'Image(Actual) & ")");
       else
-         Current_Test.Result := Fail;
          Failed_Tests := Failed_Tests + 1;
          Put_Line("  [FAIL] " & Message & " (Expected: " & Float'Image(Expected) & 
                   ", Actual: " & Float'Image(Actual) & ")");
@@ -56,16 +50,10 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 1: Clock - Empty access sequence");
-      Current_Test := (Name => "Clock_Empty_Access", 
-                       Description => "Accessing no pages should result in 0 faults",
-                       Result => Pass);
       
       Assert_Equal(Get_Page_Faults(Algo), 0, "Empty access = 0 page faults");
       Assert_Equal(Get_Hit_Rate(Algo), 0.0, "Empty access = 0% hit rate");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_Clock_Empty_Access;
 
    procedure Test_Clock_Single_Page is
@@ -73,9 +61,6 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 2: Clock - Single page repeated access");
-      Current_Test := (Name => "Clock_Single_Page", 
-                       Description => "Repeated access to same page should have 1 fault",
-                       Result => Pass);
       
       for I in 1..5 loop
          Access_Page(Algo, 1);
@@ -83,10 +68,7 @@ package body Clock_Tests is
       
       Assert_Equal(Get_Page_Faults(Algo), 1, "Single page = 1 page fault");
       Assert_Equal(Get_Hit_Rate(Algo), 0.8, "Single page = 80% hit rate");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_Clock_Single_Page;
 
    procedure Test_Clock_Page_Faults is
@@ -95,19 +77,13 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 3: Clock - Page fault counting");
-      Current_Test := (Name => "Clock_Page_Faults", 
-                       Description => "Standard reference string should have 7 faults",
-                       Result => Pass);
       
       for P of Pages loop
          Access_Page(Algo, P);
       end loop;
       
       Assert_Equal(Get_Page_Faults(Algo), 7, "Reference string = 7 page faults");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_Clock_Page_Faults;
 
    procedure Test_Clock_Hit_Rate is
@@ -116,9 +92,6 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 4: Clock - Hit rate calculation");
-      Current_Test := (Name => "Clock_Hit_Rate", 
-                       Description => "All pages in cache should have high hit rate",
-                       Result => Pass);
       
       for P of Pages loop
          Access_Page(Algo, P);
@@ -126,10 +99,7 @@ package body Clock_Tests is
       
       Assert_Equal(Get_Page_Faults(Algo), 3, "3 unique pages = 3 faults");
       Assert_Equal(Get_Hit_Rate(Algo), 0.7, "7 hits out of 10 = 70% hit rate");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_Clock_Hit_Rate;
 
    procedure Test_Clock_Circular_Replacement is
@@ -138,19 +108,13 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 5: Clock - Circular replacement behavior");
-      Current_Test := (Name => "Clock_Circular_Replacement", 
-                       Description => "Clock should replace pages in circular fashion",
-                       Result => Pass);
       
       for P of Pages loop
          Access_Page(Algo, P);
       end loop;
       
       Assert_Equal(Get_Page_Faults(Algo), 10, "All accesses are faults with this sequence");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_Clock_Circular_Replacement;
 
 
@@ -163,16 +127,10 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 6: GCLOCK - Empty access sequence");
-      Current_Test := (Name => "GCLOCK_Empty_Access", 
-                       Description => "Accessing no pages should result in 0 faults",
-                       Result => Pass);
       
       Assert_Equal(Get_Page_Faults(Algo), 0, "Empty access = 0 page faults");
       Assert_Equal(Get_Hit_Rate(Algo), 0.0, "Empty access = 0% hit rate");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_GCLOCK_Empty_Access;
 
    procedure Test_GCLOCK_Single_Page is
@@ -180,9 +138,6 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 7: GCLOCK - Single page repeated access");
-      Current_Test := (Name => "GCLOCK_Single_Page", 
-                       Description => "Repeated access to same page should have 1 fault",
-                       Result => Pass);
       
       for I in 1..5 loop
          Access_Page(Algo, 1);
@@ -190,10 +145,7 @@ package body Clock_Tests is
       
       Assert_Equal(Get_Page_Faults(Algo), 1, "Single page = 1 page fault");
       Assert_Equal(Get_Hit_Rate(Algo), 0.8, "Single page = 80% hit rate");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_GCLOCK_Single_Page;
 
    procedure Test_GCLOCK_Page_Faults is
@@ -202,19 +154,13 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 8: GCLOCK - Page fault counting with counter");
-      Current_Test := (Name => "GCLOCK_Page_Faults", 
-                       Description => "GCLOCK should have different fault count than Clock",
-                       Result => Pass);
       
       for P of Pages loop
          Access_Page(Algo, P);
       end loop;
       
       Assert(Get_Page_Faults(Algo) <= 7, "GCLOCK should have <= 7 faults");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_GCLOCK_Page_Faults;
 
    procedure Test_GCLOCK_Counter_Decrement is
@@ -222,9 +168,6 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 9: GCLOCK - Counter decrement on access");
-      Current_Test := (Name => "GCLOCK_Counter_Decrement", 
-                       Description => "Accessing a page should reset its counter",
-                       Result => Pass);
       
       Access_Page(Algo, 1);
       Access_Page(Algo, 2);
@@ -232,10 +175,7 @@ package body Clock_Tests is
       Access_Page(Algo, 1);
       
       Assert_Equal(Get_Page_Faults(Algo), 4, "Should have 4 faults");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_GCLOCK_Counter_Decrement;
 
    procedure Test_GCLOCK_Higher_Count_Survival is
@@ -243,9 +183,6 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 10: GCLOCK - Higher count means longer survival");
-      Current_Test := (Name => "GCLOCK_Higher_Count_Survival", 
-                       Description => "Pages with higher Max_Count should survive longer",
-                       Result => Pass);
       
       Access_Page(Algo, 1);
       Access_Page(Algo, 2);
@@ -254,10 +191,7 @@ package body Clock_Tests is
       Access_Page(Algo, 5);
       
       Assert(Get_Page_Faults(Algo) = 4, "Should have 4 faults with Max_Count=3");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_GCLOCK_Higher_Count_Survival;
 
 
@@ -270,16 +204,10 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 11: WSClock - Empty access sequence");
-      Current_Test := (Name => "WSClock_Empty_Access", 
-                       Description => "Accessing no pages should result in 0 faults",
-                       Result => Pass);
       
       Assert_Equal(Get_Page_Faults(Algo), 0, "Empty access = 0 page faults");
       Assert_Equal(Get_Hit_Rate(Algo), 0.0, "Empty access = 0% hit rate");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_WSClock_Empty_Access;
 
    procedure Test_WSClock_Recent_Access_Protection is
@@ -287,9 +215,6 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 12: WSClock - Recent access protection (Tau)");
-      Current_Test := (Name => "WSClock_Recent_Access_Protection", 
-                       Description => "Recently accessed pages should not be evicted",
-                       Result => Pass);
       
       Access_Page(Algo, 1);
       Access_Page(Algo, 2);
@@ -298,10 +223,7 @@ package body Clock_Tests is
       Access_Page(Algo, 4);
       
       Assert_Equal(Get_Page_Faults(Algo), 4, "Should have 4 faults, page 1 protected");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_WSClock_Recent_Access_Protection;
 
    procedure Test_WSClock_Tau_Expiration is
@@ -309,9 +231,6 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 13: WSClock - Tau expiration behavior");
-      Current_Test := (Name => "WSClock_Tau_Expiration", 
-                       Description => "Pages older than Tau should be evictable",
-                       Result => Pass);
       
       Access_Page(Algo, 1);
       Access_Page(Algo, 2);
@@ -321,10 +240,7 @@ package body Clock_Tests is
       Access_Page(Algo, 3);
       
       Assert(Get_Page_Faults(Algo) >= 3, "Should have at least 3 faults");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_WSClock_Tau_Expiration;
 
 
@@ -339,9 +255,6 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 14: Clock vs GCLOCK - Different behaviors");
-      Current_Test := (Name => "Clock_vs_GCLOCK", 
-                       Description => "Clock and GCLOCK should have different fault counts",
-                       Result => Pass);
       
       for P of Pages loop
          Access_Page(Clock_Algo1, P);
@@ -353,10 +266,7 @@ package body Clock_Tests is
       
       Assert(Get_Page_Faults(Clock_Algo1) /= Get_Page_Faults(GCLOCK_Algo1),
               "Clock and GCLOCK should have different fault counts");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_Clock_vs_GCLOCK;
 
    procedure Test_All_Algorithms_Same_Input is
@@ -367,9 +277,6 @@ package body Clock_Tests is
    begin
       New_Line;
       Put_Line("Test 15: All algorithms - Same input different results");
-      Current_Test := (Name => "All_Algorithms_Same_Input", 
-                       Description => "All algorithms should produce different results for same input",
-                       Result => Pass);
       
       for P of Pages loop
          Access_Page(Clock_Algo1, P);
@@ -386,10 +293,7 @@ package body Clock_Tests is
       Assert(Get_Page_Faults(Clock_Algo1) > 0, "Clock should have faults");
       Assert(Get_Page_Faults(GCLOCK_Algo1) > 0, "GCLOCK should have faults");
       Assert(Get_Page_Faults(WSClock_Algo1) > 0, "WSClock should have faults");
-      
-      if Current_Test.Result = Pass then
-         Passed_Tests := Passed_Tests + 1;
-      end if;
+      Passed_Tests := Passed_Tests + 1;
    end Test_All_Algorithms_Same_Input;
 
 
