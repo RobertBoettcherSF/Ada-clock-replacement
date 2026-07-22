@@ -122,7 +122,7 @@ package body Clock_Algorithms is
 
    procedure Access_Page (Algo : in out WSClock_Algo; Page : Page_ID) is
       Starting_Hand : Natural;
-      Found_Slot    : Boolean := False;
+      -- Found_Slot    : Boolean := False;
    begin
       Algo.Accesses := Algo.Accesses + 1;
       Algo.Time := Algo.Time + 1;
@@ -151,7 +151,7 @@ package body Clock_Algorithms is
             else
                if Algo.Time - Algo.Frames(Algo.Hand).Last_Access > Algo.Tau then
                   Algo.Frames(Algo.Hand) := (Page, True, Algo.Time);
-                  Found_Slot := True;
+                  -- Found_Slot := True;
                   if Algo.Hand = Algo.Capacity then
                      Algo.Hand := 1;
                   else
@@ -170,7 +170,7 @@ package body Clock_Algorithms is
             if Algo.Hand = Starting_Hand then
                -- Failsafe: if all items are active or recently accessed, replace at current hand
                Algo.Frames(Algo.Hand) := (Page, True, Algo.Time);
-               Found_Slot := True;
+               -- Found_Slot := True;
                if Algo.Hand = Algo.Capacity then
                   Algo.Hand := 1;
                else

@@ -17,7 +17,7 @@ SRC_FILES := clock_algorithms.ads clock_algorithms.adb
 TEST_FILES := run_tests.adb tests/clock_tests.ads tests/clock_tests.adb
 
 # Compiler flags
-GNAT_FLAGS := -g -O2 -gnat12 -gnata -gnatwa
+GNAT_FLAGS := -g -O2 -gnat12 -gnata
 
 # Default target
 all: library
@@ -31,7 +31,7 @@ library: $(SRC_FILES)
 tests: $(TEST_FILES)
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
 	$(GNAT) -P $(GPR_FILE) run_tests.adb $(GNAT_FLAGS)
-	./run_tests
+	./obj/run_tests
 
 # Build test library only
 testlib: $(TEST_FILES)
@@ -42,7 +42,7 @@ testlib: $(TEST_FILES)
 test: test_clock.adb
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
 	$(GNAT) -P $(GPR_FILE) test_clock.adb $(GNAT_FLAGS)
-	./test_clock
+	./obj/test_clock
 
 # Clean build artifacts
 clean:
@@ -63,9 +63,6 @@ help:
 	@echo "  clean    - Remove build artifacts"
 	@echo "  clobber  - Remove all build files"
 	@echo ""
-	@echo "Test files:"
-	@echo "  - run_tests.adb: Main test runner (15 comprehensive tests)"
-	@echo "  - tests/clock_tests.ads: Test framework specification"
-	@echo "  - tests/clock_tests.adb: Test implementations"
+	@echo "Note: Executables are built in obj/ directory"
 
 .PHONY: all library tests test testlib clean clobber help
