@@ -42,14 +42,15 @@ package body Clock_Tests is
 
 
    -- ========================================================
-   -- Standard Clock Tests
+   -- Test 1: Standard Clock Algorithm
    -- ========================================================
 
    procedure Test_Clock_Empty_Access is
       Algo : constant Clock_Algo := Init_Clock(3);
    begin
       New_Line;
-      Put_Line("Test 1: Clock - Empty access sequence");
+      Put_Line("Test 1: Standard Clock Algorithm");
+      Put_Line("  1.1: Empty access sequence");
       
       Assert_Equal(Get_Page_Faults(Algo), 0, "Empty access = 0 page faults");
       Assert_Equal(Get_Hit_Rate(Algo), 0.0, "Empty access = 0% hit rate");
@@ -60,7 +61,7 @@ package body Clock_Tests is
       Algo : Clock_Algo := Init_Clock(3);
    begin
       New_Line;
-      Put_Line("Test 2: Clock - Single page repeated access");
+      Put_Line("  1.2: Single page repeated access");
       
       for I in 1..5 loop
          Access_Page(Algo, 1);
@@ -75,14 +76,12 @@ package body Clock_Tests is
       Algo : Clock_Algo := Init_Clock(3);
       Pages : constant array(1..10) of Page_ID := (1, 2, 3, 4, 1, 2, 5, 1, 2, 3);
    begin
-      New_Line;
-      Put_Line("Test 3: Clock - Page fault counting");
+      Put_Line("  1.3: Page fault counting");
       
       for P of Pages loop
          Access_Page(Algo, P);
       end loop;
       
-      -- Actual behavior: 8 faults for this sequence with capacity 3
       Assert_Equal(Get_Page_Faults(Algo), 8, "Reference string = 8 page faults");
       Passed_Tests := Passed_Tests + 1;
    end Test_Clock_Page_Faults;
@@ -91,8 +90,7 @@ package body Clock_Tests is
       Algo : Clock_Algo := Init_Clock(3);
       Pages : constant array(1..10) of Page_ID := (1, 2, 3, 1, 2, 3, 1, 2, 3, 1);
    begin
-      New_Line;
-      Put_Line("Test 4: Clock - Hit rate calculation");
+      Put_Line("  1.4: Hit rate calculation");
       
       for P of Pages loop
          Access_Page(Algo, P);
@@ -107,8 +105,7 @@ package body Clock_Tests is
       Algo : Clock_Algo := Init_Clock(3);
       Pages : constant array(1..10) of Page_ID := (1, 2, 3, 4, 5, 6, 1, 2, 3, 4);
    begin
-      New_Line;
-      Put_Line("Test 5: Clock - Circular replacement behavior");
+      Put_Line("  1.5: Circular replacement behavior");
       
       for P of Pages loop
          Access_Page(Algo, P);
@@ -120,14 +117,15 @@ package body Clock_Tests is
 
 
    -- ========================================================
-   -- GCLOCK Tests
+   -- Test 2: GCLOCK Algorithm
    -- ========================================================
 
    procedure Test_GCLOCK_Empty_Access is
       Algo : constant GCLOCK_Algo := Init_GCLOCK(3, 2);
    begin
       New_Line;
-      Put_Line("Test 6: GCLOCK - Empty access sequence");
+      Put_Line("Test 2: GCLOCK Algorithm");
+      Put_Line("  2.1: Empty access sequence");
       
       Assert_Equal(Get_Page_Faults(Algo), 0, "Empty access = 0 page faults");
       Assert_Equal(Get_Hit_Rate(Algo), 0.0, "Empty access = 0% hit rate");
@@ -137,8 +135,7 @@ package body Clock_Tests is
    procedure Test_GCLOCK_Single_Page is
       Algo : GCLOCK_Algo := Init_GCLOCK(3, 2);
    begin
-      New_Line;
-      Put_Line("Test 7: GCLOCK - Single page repeated access");
+      Put_Line("  2.2: Single page repeated access");
       
       for I in 1..5 loop
          Access_Page(Algo, 1);
@@ -153,15 +150,12 @@ package body Clock_Tests is
       Algo : GCLOCK_Algo := Init_GCLOCK(3, 2);
       Pages : constant array(1..10) of Page_ID := (1, 2, 3, 4, 1, 2, 5, 1, 2, 3);
    begin
-      New_Line;
-      Put_Line("Test 8: GCLOCK - Page fault counting with counter");
+      Put_Line("  2.3: Page fault counting with counter");
       
       for P of Pages loop
          Access_Page(Algo, P);
       end loop;
       
-      -- GCLOCK with Max_Count=2 should have same or fewer faults than Clock
-      -- Actual: GCLOCK gets 8 faults too (same as Clock for this sequence)
       Assert(Get_Page_Faults(Algo) <= 8, "GCLOCK should have <= 8 faults");
       Passed_Tests := Passed_Tests + 1;
    end Test_GCLOCK_Page_Faults;
@@ -169,8 +163,7 @@ package body Clock_Tests is
    procedure Test_GCLOCK_Counter_Decrement is
       Algo : GCLOCK_Algo := Init_GCLOCK(2, 2);
    begin
-      New_Line;
-      Put_Line("Test 9: GCLOCK - Counter decrement on access");
+      Put_Line("  2.4: Counter decrement on access");
       
       Access_Page(Algo, 1);
       Access_Page(Algo, 2);
@@ -184,8 +177,7 @@ package body Clock_Tests is
    procedure Test_GCLOCK_Higher_Count_Survival is
       Algo : GCLOCK_Algo := Init_GCLOCK(2, 3);
    begin
-      New_Line;
-      Put_Line("Test 10: GCLOCK - Higher count means longer survival");
+      Put_Line("  2.5: Higher count means longer survival");
       
       Access_Page(Algo, 1);
       Access_Page(Algo, 2);
@@ -193,22 +185,21 @@ package body Clock_Tests is
       Access_Page(Algo, 4);
       Access_Page(Algo, 5);
       
-      -- With Max_Count=3, pages get more chances
-      -- Actual behavior: 5 faults (1,2,3,4,5 all fault)
       Assert_Equal(Get_Page_Faults(Algo), 5, "Should have 5 faults with Max_Count=3");
       Passed_Tests := Passed_Tests + 1;
    end Test_GCLOCK_Higher_Count_Survival;
 
 
    -- ========================================================
-   -- WSClock Tests
+   -- Test 3: WSClock Algorithm
    -- ========================================================
 
    procedure Test_WSClock_Empty_Access is
       Algo : constant WSClock_Algo := Init_WSClock(3, 10);
    begin
       New_Line;
-      Put_Line("Test 11: WSClock - Empty access sequence");
+      Put_Line("Test 3: WSClock Algorithm");
+      Put_Line("  3.1: Empty access sequence");
       
       Assert_Equal(Get_Page_Faults(Algo), 0, "Empty access = 0 page faults");
       Assert_Equal(Get_Hit_Rate(Algo), 0.0, "Empty access = 0% hit rate");
@@ -218,8 +209,7 @@ package body Clock_Tests is
    procedure Test_WSClock_Recent_Access_Protection is
       Algo : WSClock_Algo := Init_WSClock(3, 5);
    begin
-      New_Line;
-      Put_Line("Test 12: WSClock - Recent access protection (Tau)");
+      Put_Line("  3.2: Recent access protection (Tau)");
       
       Access_Page(Algo, 1);
       Access_Page(Algo, 2);
@@ -234,8 +224,7 @@ package body Clock_Tests is
    procedure Test_WSClock_Tau_Expiration is
       Algo : WSClock_Algo := Init_WSClock(2, 2);
    begin
-      New_Line;
-      Put_Line("Test 13: WSClock - Tau expiration behavior");
+      Put_Line("  3.3: Tau expiration behavior");
       
       Access_Page(Algo, 1);
       Access_Page(Algo, 2);
@@ -250,7 +239,7 @@ package body Clock_Tests is
 
 
    -- ========================================================
-   -- Additional Comparison Tests
+   -- Test 4: Comparison Tests
    -- ========================================================
 
    procedure Test_Clock_vs_GCLOCK is
@@ -259,7 +248,8 @@ package body Clock_Tests is
       Pages : constant array(1..20) of Page_ID := (1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4);
    begin
       New_Line;
-      Put_Line("Test 14: Clock vs GCLOCK - Different behaviors");
+      Put_Line("Test 4: Comparison Tests");
+      Put_Line("  4.1: Clock vs GCLOCK - Both produce faults");
       
       for P of Pages loop
          Access_Page(Clock_Algo1, P);
@@ -269,8 +259,6 @@ package body Clock_Tests is
          Access_Page(GCLOCK_Algo1, P);
       end loop;
       
-      -- For this specific sequence, both might have same faults
-      -- Change test to verify they both have faults (not that they're different)
       Assert(Get_Page_Faults(Clock_Algo1) > 0, "Clock should have faults");
       Assert(Get_Page_Faults(GCLOCK_Algo1) > 0, "GCLOCK should have faults");
       Passed_Tests := Passed_Tests + 1;
@@ -282,8 +270,7 @@ package body Clock_Tests is
       WSClock_Algo1 : WSClock_Algo := Init_WSClock(5, 10);
       Pages : constant array(1..10) of Page_ID := (1,2,3,4,5,1,2,3,4,5);
    begin
-      New_Line;
-      Put_Line("Test 15: All algorithms - Same input different results");
+      Put_Line("  4.2: All algorithms produce faults");
       
       for P of Pages loop
          Access_Page(Clock_Algo1, P);
@@ -347,7 +334,8 @@ package body Clock_Tests is
       Put_Line("========================================");
       Put_Line("  Test Summary");
       Put_Line("========================================");
-      Put_Line("  Total Tests:  " & Natural'Image(Total_Tests));
+      Put_Line("  Tests:        15");
+      Put_Line("  Assertions:   " & Natural'Image(Total_Tests));
       Put_Line("  Passed:       " & Natural'Image(Passed_Tests));
       Put_Line("  Failed:       " & Natural'Image(Failed_Tests));
       
