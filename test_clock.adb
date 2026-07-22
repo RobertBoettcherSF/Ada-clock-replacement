@@ -5,7 +5,7 @@ procedure Test_Clock is
    -- Test Standard Clock algorithm
    procedure Test_Standard_Clock is
       Algo : Clock_Algo := Init_Clock(3);
-      Pages : array(1..10) of Page_ID := (1, 2, 3, 4, 1, 2, 5, 1, 2, 3);
+      Pages : constant array(1..10) of Page_ID := (1, 2, 3, 4, 1, 2, 5, 1, 2, 3);
    begin
       Put_Line("Testing Standard Clock algorithm:");
       Put_Line("  Page access sequence: 1, 2, 3, 4, 1, 2, 5, 1, 2, 3");
@@ -22,7 +22,7 @@ procedure Test_Clock is
    -- Test GCLOCK algorithm
    procedure Test_GCLOCK is
       Algo : GCLOCK_Algo := Init_GCLOCK(3, 2);
-      Pages : array(1..10) of Page_ID := (1, 2, 3, 4, 1, 2, 5, 1, 2, 3);
+      Pages : constant array(1..10) of Page_ID := (1, 2, 3, 4, 1, 2, 5, 1, 2, 3);
    begin
       Put_Line("Testing GCLOCK algorithm:");
       Put_Line("  Page access sequence: 1, 2, 3, 4, 1, 2, 5, 1, 2, 3");
@@ -39,7 +39,7 @@ procedure Test_Clock is
    -- Test WSClock algorithm
    procedure Test_WSClock is
       Algo : WSClock_Algo := Init_WSClock(3, 10);
-      Pages : array(1..10) of Page_ID := (1, 2, 3, 4, 1, 2, 5, 1, 2, 3);
+      Pages : constant array(1..10) of Page_ID := (1, 2, 3, 4, 1, 2, 5, 1, 2, 3);
    begin
       Put_Line("Testing WSClock algorithm:");
       Put_Line("  Page access sequence: 1, 2, 3, 4, 1, 2, 5, 1, 2, 3");
