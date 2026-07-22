@@ -1,6 +1,6 @@
 project Clock_Variants is
 
-   for Source_Dirs use (".");
+   for Source_Dirs use (".", "tests");
    for Object_Dir use "obj";
    
    -- If you add a "main.adb" testing file, uncomment the line below.
@@ -9,7 +9,7 @@ project Clock_Variants is
    package Compiler is
       -- Uses Ada 2012 features. -gnatwa turns on all warnings,
       -- -O3 for max optimization since simulations require heavy loop performance
-      for Default_Switches ("Ada") use ("-g", "-O3", "-gnat12", "-gnata", "-gnatwa");
+      for Default_Switches ("Ada") use ("-g", "-O2", "-gnat12", "-gnata", "-gnatwa");
    end Compiler;
 
 end Clock_Variants;

@@ -121,10 +121,13 @@ package body Clock_Algorithms is
    end Init_WSClock;
 
    procedure Access_Page (Algo : in out WSClock_Algo; Page : Page_ID) is
+      Starting_Hand : Natural;
+      Found_Slot    : Boolean := False;
    begin
       Algo.Accesses := Algo.Accesses + 1;
       Algo.Time := Algo.Time + 1;
 
+      -- Hit check
       for I in 1 .. Algo.Count loop
          if Algo.Frames(I).Page = Page then
             Algo.Frames(I).Ref := True;
@@ -133,42 +136,22 @@ package body Clock_Algorithms is
          end if;
       end loop;
 
+      -- Fault
       Algo.Page_Faults := Algo.Page_Faults + 1;
 
       if Algo.Count < Algo.Capacity then
          Algo.Count := Algo.Count + 1;
          Algo.Frames(Algo.Count) := (Page, True, Algo.Time);
       else
-         declare
-            Starting_Hand : Natural := Algo.Hand;
-            Replaced      : Boolean := False;
-         begin
-            loop
-               if Algo.Frames(Algo.Hand).Ref then
-                  Algo.Frames(Algo.Hand).Ref := False;
-                  Algo.Frames(Algo.Hand).Last_Access := Algo.Time;
-               else
-                  if Algo.Time - Algo.Frames(Algo.Hand).Last_Access > Algo.Tau then
-                     Algo.Frames(Algo.Hand) := (Page, True, Algo.Time);
-                     Replaced := True;
-                     if Algo.Hand = Algo.Capacity then
-                        Algo.Hand := 1;
-                     else
-                        Algo.Hand := Algo.Hand + 1;
-                     end if;
-                     exit;
-                  end if;
-               end if;
-
-               if Algo.Hand = Algo.Capacity then
-                  Algo.Hand := 1;
-               else
-                  Algo.Hand := Algo.Hand + 1;
-               end if;
-               if Algo.Hand = Starting_Hand then
-                  -- Failsafe: if all items are active or recently accessed, replace at current hand
+         Starting_Hand := Algo.Hand;
+         loop
+            if Algo.Frames(Algo.Hand).Ref then
+               Algo.Frames(Algo.Hand).Ref := False;
+               Algo.Frames(Algo.Hand).Last_Access := Algo.Time;
+            else
+               if Algo.Time - Algo.Frames(Algo.Hand).Last_Access > Algo.Tau then
                   Algo.Frames(Algo.Hand) := (Page, True, Algo.Time);
-                  Replaced := True;
+                  Found_Slot := True;
                   if Algo.Hand = Algo.Capacity then
                      Algo.Hand := 1;
                   else
@@ -176,8 +159,26 @@ package body Clock_Algorithms is
                   end if;
                   exit;
                end if;
-            end loop;
-         end;
+            end if;
+
+            if Algo.Hand = Algo.Capacity then
+               Algo.Hand := 1;
+            else
+               Algo.Hand := Algo.Hand + 1;
+            end if;
+            
+            if Algo.Hand = Starting_Hand then
+               -- Failsafe: if all items are active or recently accessed, replace at current hand
+               Algo.Frames(Algo.Hand) := (Page, True, Algo.Time);
+               Found_Slot := True;
+               if Algo.Hand = Algo.Capacity then
+                  Algo.Hand := 1;
+               else
+                  Algo.Hand := Algo.Hand + 1;
+               end if;
+               exit;
+            end if;
+         end loop;
       end if;
    end Access_Page;
 
