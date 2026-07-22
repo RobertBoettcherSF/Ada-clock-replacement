@@ -27,8 +27,8 @@ package Clock_Algorithms is
    end record;
 
    type Clock_Algo (Max_Capacity : Natural) is new Base_Algorithm with record
-      Frames : array (0 .. Max_Capacity - 1) of Clock_Entry;
-      Hand   : Natural := 0;
+      Frames : array (1 .. Max_Capacity) of Clock_Entry;
+      Hand   : Natural := 1;
       Count  : Natural := 0;
    end record;
    
@@ -46,8 +46,8 @@ package Clock_Algorithms is
    end record;
 
    type GCLOCK_Algo (Max_Capacity : Natural) is new Base_Algorithm with record
-      Frames    : array (0 .. Max_Capacity - 1) of GClock_Entry;
-      Hand      : Natural := 0;
+      Frames    : array (1 .. Max_Capacity) of GClock_Entry;
+      Hand      : Natural := 1;
       Count     : Natural := 0;
       Max_Count : Natural := 2;
    end record;
@@ -67,8 +67,8 @@ package Clock_Algorithms is
    end record;
 
    type WSClock_Algo (Max_Capacity : Natural) is new Base_Algorithm with record
-      Frames : array (0 .. Max_Capacity - 1) of WSClock_Entry;
-      Hand   : Natural := 0;
+      Frames : array (1 .. Max_Capacity) of WSClock_Entry;
+      Hand   : Natural := 1;
       Count  : Natural := 0;
       Tau    : Natural := 10;
       Time   : Natural := 0;

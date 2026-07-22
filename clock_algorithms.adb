@@ -20,7 +20,7 @@ package body Clock_Algorithms is
    function Init_Clock (Capacity : Natural) return Clock_Algo is
    begin
       return (Max_Capacity => Capacity, Capacity => Capacity, Page_Faults => 0, 
-              Accesses => 0, Frames => (others => (0, False)), Hand => 0, Count => 0);
+              Accesses => 0, Frames => (others => (0, False)), Hand => 1, Count => 0);
    end Init_Clock;
 
    procedure Access_Page (Algo : in out Clock_Algo; Page : Page_ID) is
@@ -28,7 +28,7 @@ package body Clock_Algorithms is
       Algo.Accesses := Algo.Accesses + 1;
       
       -- Hit check
-      for I in 0 .. Algo.Count - 1 loop
+      for I in 1 .. Algo.Count loop
          if Algo.Frames(I).Page = Page then
             Algo.Frames(I).Ref := True;
             return;
@@ -39,16 +39,24 @@ package body Clock_Algorithms is
       Algo.Page_Faults := Algo.Page_Faults + 1;
 
       if Algo.Count < Algo.Capacity then
-         Algo.Frames(Algo.Count) := (Page, True);
          Algo.Count := Algo.Count + 1;
+         Algo.Frames(Algo.Count) := (Page, True);
       else
          loop
             if Algo.Frames(Algo.Hand).Ref then
                Algo.Frames(Algo.Hand).Ref := False;
-               Algo.Hand := (Algo.Hand + 1) mod Algo.Capacity;
+               if Algo.Hand = Algo.Capacity then
+                  Algo.Hand := 1;
+               else
+                  Algo.Hand := Algo.Hand + 1;
+               end if;
             else
                Algo.Frames(Algo.Hand) := (Page, True);
-               Algo.Hand := (Algo.Hand + 1) mod Algo.Capacity;
+               if Algo.Hand = Algo.Capacity then
+                  Algo.Hand := 1;
+               else
+                  Algo.Hand := Algo.Hand + 1;
+               end if;
                exit;
             end if;
          end loop;
@@ -62,13 +70,13 @@ package body Clock_Algorithms is
    function Init_GCLOCK (Capacity : Natural; Max_Count : Natural := 2) return GCLOCK_Algo is
    begin
       return (Max_Capacity => Capacity, Capacity => Capacity, Page_Faults => 0, 
-              Accesses => 0, Frames => (others => (0, 0)), Hand => 0, Count => 0, Max_Count => Max_Count);
+              Accesses => 0, Frames => (others => (0, 0)), Hand => 1, Count => 0, Max_Count => Max_Count);
    end Init_GCLOCK;
 
    procedure Access_Page (Algo : in out GCLOCK_Algo; Page : Page_ID) is
    begin
       Algo.Accesses := Algo.Accesses + 1;
-      for I in 0 .. Algo.Count - 1 loop
+      for I in 1 .. Algo.Count loop
          if Algo.Frames(I).Page = Page then
             Algo.Frames(I).Count := Algo.Max_Count;
             return;
@@ -78,16 +86,24 @@ package body Clock_Algorithms is
       Algo.Page_Faults := Algo.Page_Faults + 1;
 
       if Algo.Count < Algo.Capacity then
-         Algo.Frames(Algo.Count) := (Page, Algo.Max_Count);
          Algo.Count := Algo.Count + 1;
+         Algo.Frames(Algo.Count) := (Page, Algo.Max_Count);
       else
          loop
             if Algo.Frames(Algo.Hand).Count > 0 then
                Algo.Frames(Algo.Hand).Count := Algo.Frames(Algo.Hand).Count - 1;
-               Algo.Hand := (Algo.Hand + 1) mod Algo.Capacity;
+               if Algo.Hand = Algo.Capacity then
+                  Algo.Hand := 1;
+               else
+                  Algo.Hand := Algo.Hand + 1;
+               end if;
             else
                Algo.Frames(Algo.Hand) := (Page, Algo.Max_Count);
-               Algo.Hand := (Algo.Hand + 1) mod Algo.Capacity;
+               if Algo.Hand = Algo.Capacity then
+                  Algo.Hand := 1;
+               else
+                  Algo.Hand := Algo.Hand + 1;
+               end if;
                exit;
             end if;
          end loop;
@@ -101,7 +117,7 @@ package body Clock_Algorithms is
    function Init_WSClock (Capacity : Natural; Tau : Natural := 10) return WSClock_Algo is
    begin
       return (Max_Capacity => Capacity, Capacity => Capacity, Page_Faults => 0, 
-              Accesses => 0, Frames => (others => (0, False, 0)), Hand => 0, Count => 0, Tau => Tau, Time => 0);
+              Accesses => 0, Frames => (others => (0, False, 0)), Hand => 1, Count => 0, Tau => Tau, Time => 0);
    end Init_WSClock;
 
    procedure Access_Page (Algo : in out WSClock_Algo; Page : Page_ID) is
@@ -109,7 +125,7 @@ package body Clock_Algorithms is
       Algo.Accesses := Algo.Accesses + 1;
       Algo.Time := Algo.Time + 1;
 
-      for I in 0 .. Algo.Count - 1 loop
+      for I in 1 .. Algo.Count loop
          if Algo.Frames(I).Page = Page then
             Algo.Frames(I).Ref := True;
             Algo.Frames(I).Last_Access := Algo.Time;
@@ -120,8 +136,8 @@ package body Clock_Algorithms is
       Algo.Page_Faults := Algo.Page_Faults + 1;
 
       if Algo.Count < Algo.Capacity then
-         Algo.Frames(Algo.Count) := (Page, True, Algo.Time);
          Algo.Count := Algo.Count + 1;
+         Algo.Frames(Algo.Count) := (Page, True, Algo.Time);
       else
          declare
             Starting_Hand : Natural := Algo.Hand;
@@ -135,17 +151,29 @@ package body Clock_Algorithms is
                   if Algo.Time - Algo.Frames(Algo.Hand).Last_Access > Algo.Tau then
                      Algo.Frames(Algo.Hand) := (Page, True, Algo.Time);
                      Replaced := True;
-                     Algo.Hand := (Algo.Hand + 1) mod Algo.Capacity;
+                     if Algo.Hand = Algo.Capacity then
+                        Algo.Hand := 1;
+                     else
+                        Algo.Hand := Algo.Hand + 1;
+                     end if;
                      exit;
                   end if;
                end if;
 
-               Algo.Hand := (Algo.Hand + 1) mod Algo.Capacity;
+               if Algo.Hand = Algo.Capacity then
+                  Algo.Hand := 1;
+               else
+                  Algo.Hand := Algo.Hand + 1;
+               end if;
                if Algo.Hand = Starting_Hand then
                   -- Failsafe: if all items are active or recently accessed, replace at current hand
                   Algo.Frames(Algo.Hand) := (Page, True, Algo.Time);
                   Replaced := True;
-                  Algo.Hand := (Algo.Hand + 1) mod Algo.Capacity;
+                  if Algo.Hand = Algo.Capacity then
+                     Algo.Hand := 1;
+                  else
+                     Algo.Hand := Algo.Hand + 1;
+                  end if;
                   exit;
                end if;
             end loop;
