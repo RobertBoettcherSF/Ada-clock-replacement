@@ -5,6 +5,9 @@ package Clock_Algorithms is
 
    type Page_ID is new Integer;
 
+   -- Maximum capacity for all algorithms
+   Max_Pages : constant Natural := 1000;
+
    -- Abstract base type for all page replacement algorithms
    type Base_Algorithm is abstract tagged record
       Capacity    : Natural;
@@ -26,8 +29,10 @@ package Clock_Algorithms is
       Ref  : Boolean;
    end record;
 
-   type Clock_Algo (Max_Capacity : Natural) is new Base_Algorithm with record
-      Frames : array (1 .. Max_Capacity) of Clock_Entry;
+   type Clock_Frames is array (1 .. Max_Pages) of Clock_Entry;
+
+   type Clock_Algo is new Base_Algorithm with record
+      Frames : Clock_Frames;
       Hand   : Natural := 1;
       Count  : Natural := 0;
    end record;
@@ -45,8 +50,10 @@ package Clock_Algorithms is
       Count : Natural;
    end record;
 
-   type GCLOCK_Algo (Max_Capacity : Natural) is new Base_Algorithm with record
-      Frames    : array (1 .. Max_Capacity) of GClock_Entry;
+   type GClock_Frames is array (1 .. Max_Pages) of GClock_Entry;
+
+   type GCLOCK_Algo is new Base_Algorithm with record
+      Frames    : GClock_Frames;
       Hand      : Natural := 1;
       Count     : Natural := 0;
       Max_Count : Natural := 2;
@@ -66,8 +73,10 @@ package Clock_Algorithms is
       Last_Access : Natural;
    end record;
 
-   type WSClock_Algo (Max_Capacity : Natural) is new Base_Algorithm with record
-      Frames : array (1 .. Max_Capacity) of WSClock_Entry;
+   type WSClock_Frames is array (1 .. Max_Pages) of WSClock_Entry;
+
+   type WSClock_Algo is new Base_Algorithm with record
+      Frames : WSClock_Frames;
       Hand   : Natural := 1;
       Count  : Natural := 0;
       Tau    : Natural := 10;

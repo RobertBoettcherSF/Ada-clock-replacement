@@ -19,7 +19,7 @@ package body Clock_Algorithms is
    -- ========================================================
    function Init_Clock (Capacity : Natural) return Clock_Algo is
    begin
-      return (Max_Capacity => Capacity, Capacity => Capacity, Page_Faults => 0, 
+      return (Capacity => Capacity, Page_Faults => 0, 
               Accesses => 0, Frames => (others => (0, False)), Hand => 1, Count => 0);
    end Init_Clock;
 
@@ -69,7 +69,7 @@ package body Clock_Algorithms is
    -- ========================================================
    function Init_GCLOCK (Capacity : Natural; Max_Count : Natural := 2) return GCLOCK_Algo is
    begin
-      return (Max_Capacity => Capacity, Capacity => Capacity, Page_Faults => 0, 
+      return (Capacity => Capacity, Page_Faults => 0, 
               Accesses => 0, Frames => (others => (0, 0)), Hand => 1, Count => 0, Max_Count => Max_Count);
    end Init_GCLOCK;
 
@@ -116,7 +116,7 @@ package body Clock_Algorithms is
    -- ========================================================
    function Init_WSClock (Capacity : Natural; Tau : Natural := 10) return WSClock_Algo is
    begin
-      return (Max_Capacity => Capacity, Capacity => Capacity, Page_Faults => 0, 
+      return (Capacity => Capacity, Page_Faults => 0, 
               Accesses => 0, Frames => (others => (0, False, 0)), Hand => 1, Count => 0, Tau => Tau, Time => 0);
    end Init_WSClock;
 
